@@ -1,0 +1,235 @@
+@page
+@model PCM_396.Pages.Matches.CreateModel
+@{
+    ViewData["Title"] = "Nhập kết quả trận đấu (Referee)";
+}
+
+<!-- Page Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="text-center">
+            <h1 class="display-6 mb-2">
+                <i class="bi bi-clipboard-check-fill text-warning"></i>
+                Nhập kết quả trận đấu
+            </h1>
+            <p class="text-muted">
+                <i class="bi bi-shield-fill-check"></i>
+                Chức năng dành cho Trọng tài / Admin
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card border-0 shadow-lg">
+            <div class="card-header bg-warning text-dark py-4">
+                <h4 class="mb-0">
+                    <i class="bi bi-pencil-square me-2"></i>
+                    Ghi nhận kết quả
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    <!-- Thông tin trận đấu -->
+                    <div class="card mb-4 border-primary">
+                        <div class="card-header bg-primary bg-opacity-10">
+                            <h5 class="mb-0">
+                                <i class="bi bi-info-circle-fill text-primary me-2"></i>
+                                Thông tin trận đấu
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label asp-for="Input.Format" class="form-label fw-bold">
+                                        <i class="bi bi-diagram-3 text-primary me-2"></i>
+                                        Loại trận đấu *
+                                    </label>
+                                    <select asp-for="Input.Format" class="form-select form-select-lg" id="formatSelect">
+                                        <option value="0">🎯 Đơn (Singles) - 1vs1</option>
+                                        <option value="1">👥 Đôi (Doubles) - 2vs2</option>
+                                    </select>
+                                    <span asp-validation-for="Input.Format" class="text-danger"></span>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label asp-for="Input.ChallengeId" class="form-label fw-bold">
+                                        <i class="bi bi-trophy text-warning me-2"></i>
+                                        Thuộc Kèo nào? (Tùy chọn)
+                                    </label>
+                                    <select asp-for="Input.ChallengeId" class="form-select form-select-lg">
+                                        <option value="">-- Không có kèo (Đánh tự do) --</option>
+                                        @foreach (var challenge in Model.AcceptedChallenges)
+                                        {
+                                            <option value="@challenge.Id">
+                                                @challenge.Title (@challenge.Creator.FullName)
+                                            </option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Người thắng -->
+                    <div class="card mb-4 border-success">
+                        <div class="card-header bg-success bg-opacity-10">
+                            <h5 class="mb-0">
+                                <i class="bi bi-trophy-fill text-success me-2"></i>
+                                Người thắng (Winners)
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label asp-for="Input.Winner1Id" class="form-label fw-bold">
+                                        <i class="bi bi-person-check-fill text-success me-2"></i>
+                                        Winner 1 *
+                                    </label>
+                                    <select asp-for="Input.Winner1Id" class="form-select form-select-lg" required>
+                                        <option value="">-- Chọn người chơi --</option>
+                                        @foreach (var member in Model.Members)
+                                        {
+                                            <option value="@member.Id">
+                                                @member.FullName ⭐ Rank: @member.RankLevel.ToString("F1")
+                                            </option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="Input.Winner1Id" class="text-danger"></span>
+                                </div>
+                                
+                                <div class="col-md-6" id="winner2Div">
+                                    <label asp-for="Input.Winner2Id" class="form-label fw-bold">
+                                        <i class="bi bi-person-check-fill text-success me-2"></i>
+                                        Winner 2 (Chỉ cho Đôi)
+                                    </label>
+                                    <select asp-for="Input.Winner2Id" class="form-select form-select-lg">
+                                        <option value="">-- Chọn người chơi --</option>
+                                        @foreach (var member in Model.Members)
+                                        {
+                                            <option value="@member.Id">
+                                                @member.FullName ⭐ Rank: @member.RankLevel.ToString("F1")
+                                            </option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="Input.Winner2Id" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Người thua -->
+                    <div class="card mb-4 border-danger">
+                        <div class="card-header bg-danger bg-opacity-10">
+                            <h5 class="mb-0">
+                                <i class="bi bi-x-circle-fill text-danger me-2"></i>
+                                Người thua (Losers)
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label asp-for="Input.Loser1Id" class="form-label fw-bold">
+                                        <i class="bi bi-person-x-fill text-danger me-2"></i>
+                                        Loser 1 *
+                                    </label>
+                                    <select asp-for="Input.Loser1Id" class="form-select form-select-lg" required>
+                                        <option value="">-- Chọn người chơi --</option>
+                                        @foreach (var member in Model.Members)
+                                        {
+                                            <option value="@member.Id">
+                                                @member.FullName ⭐ Rank: @member.RankLevel.ToString("F1")
+                                            </option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="Input.Loser1Id" class="text-danger"></span>
+                                </div>
+                                
+                                <div class="col-md-6" id="loser2Div">
+                                    <label asp-for="Input.Loser2Id" class="form-label fw-bold">
+                                        <i class="bi bi-person-x-fill text-danger me-2"></i>
+                                        Loser 2 (Chỉ cho Đôi)
+                                    </label>
+                                    <select asp-for="Input.Loser2Id" class="form-select form-select-lg">
+                                        <option value="">-- Chọn người chơi --</option>
+                                        @foreach (var member in Model.Members)
+                                        {
+                                            <option value="@member.Id">
+                                                @member.FullName ⭐ Rank: @member.RankLevel.ToString("F1")
+                                            </option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="Input.Loser2Id" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tính điểm -->
+                    <div class="card mb-4 border-warning">
+                        <div class="card-header bg-warning bg-opacity-10">
+                            <h5 class="mb-0">
+                                <i class="bi bi-calculator-fill text-warning me-2"></i>
+                                Cài đặt điểm số
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-check form-switch">
+                                <input asp-for="Input.IsRanked" class="form-check-input" type="checkbox" checked 
+                                       style="width: 3em; height: 1.5em;" />
+                                <label asp-for="Input.IsRanked" class="form-check-label fw-bold ms-2">
+                                    <i class="bi bi-graph-up-arrow text-success"></i>
+                                    Tính điểm (IsRanked)
+                                </label>
+                            </div>
+                            <div class="alert alert-warning border-0 mt-3 mb-0">
+                                <i class="bi bi-info-circle-fill me-2"></i>
+                                <strong>Quy tắc:</strong> Người thắng +0.1 điểm, người thua -0.1 điểm (tối thiểu 1.0)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="d-grid gap-3 d-md-flex justify-content-md-end">
+                        <a asp-page="/Index" class="btn btn-secondary btn-lg px-4">
+                            <i class="bi bi-x-circle me-2"></i>
+                            Hủy bỏ
+                        </a>
+                        <button type="submit" class="btn btn-warning btn-lg px-5">
+                            <i class="bi bi-save-fill me-2"></i>
+                            Lưu kết quả
+                        </button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Logic hiển thị/ẩn Winner2 và Loser2 dựa vào Format
+        document.getElementById('formatSelect').addEventListener('change', function() {
+            var format = this.value;
+            var winner2Div = document.getElementById('winner2Div');
+            var loser2Div = document.getElementById('loser2Div');
+            
+            if (format == '1') { // Doubles
+                winner2Div.style.display = 'block';
+                loser2Div.style.display = 'block';
+            } else { // Singles
+                winner2Div.style.display = 'none';
+                loser2Div.style.display = 'none';
+                document.querySelector('[name="Input.Winner2Id"]').value = '';
+                document.querySelector('[name="Input.Loser2Id"]').value = '';
+            }
+        });
+        
+        // Khởi tạo ban đầu
+        document.getElementById('formatSelect').dispatchEvent(new Event('change'));
+    </script>
+}

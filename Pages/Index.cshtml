@@ -1,0 +1,147 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Trang chủ";
+}
+
+<div class="page-wrapper animate-fadeIn">
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-content text-center">
+            <div class="hero-icon mb-4 animate-pulse">
+                <i class="bi bi-trophy-fill"></i>
+            </div>
+            <h1 class="hero-title mb-3">
+                Chào mừng đến với CLB Pickleball<br>
+                <span class="text-gradient">"Vợt Thủ Phô Nữi"</span>
+            </h1>
+            <p class="hero-subtitle mb-4">
+                <i class="bi bi-stars"></i>
+                Hệ thống quản lý trận đấu và thách đấu chuyên nghiệp
+            </p>
+            @if (User.Identity?.IsAuthenticated != true)
+            {
+                <div class="hero-cta">
+                    <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary btn-lg me-3">
+                        <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
+                    </a>
+                    <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-primary btn-lg">
+                        <i class="bi bi-person-plus-fill"></i> Đăng ký
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+    
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <!-- Feature Cards Section -->
+        <div class="features-section mt-5">
+            <h2 class="section-title text-center mb-5">
+                <i class="bi bi-lightning-charge-fill"></i>
+                Chức năng chính
+            </h2>
+            <div class="card-grid">
+                <!-- Tìm Kèo Card -->
+                <div class="feature-card hover-lift animate-fadeIn" style="animation-delay: 0.1s;">
+                    <div class="feature-icon fire-icon">
+                        <i class="bi bi-fire"></i>
+                    </div>
+                    <h3 class="feature-title">Tìm Kèo</h3>
+                    <p class="feature-description">Xem và nhận các thách đấu từ hội viên khác, thi đấu để nâng cao kỹ năng</p>
+                    <a asp-page="/Challenges/Index" class="btn btn-primary w-100">
+                        <i class="bi bi-arrow-right-circle"></i> Khám phá ngay
+                    </a>
+                    <div class="feature-bg-icon">
+                        <i class="bi bi-fire"></i>
+                    </div>
+                </div>
+
+                <!-- Đặt Sân Card -->
+                <div class="feature-card hover-lift animate-fadeIn" style="animation-delay: 0.2s;">
+                    <div class="feature-icon calendar-icon">
+                        <i class="bi bi-calendar-check"></i>
+                    </div>
+                    <h3 class="feature-title">Đặt Sân</h3>
+                    <p class="feature-description">Đặt lịch chơi tại sân CLB dễ dàng, quản lý thời gian hiệu quả</p>
+                    <a asp-page="/Bookings/Create" class="btn btn-success w-100">
+                        <i class="bi bi-arrow-right-circle"></i> Đặt ngay
+                    </a>
+                    <div class="feature-bg-icon">
+                        <i class="bi bi-calendar-check"></i>
+                    </div>
+                </div>
+
+                <!-- Lịch Sử Card -->
+                <div class="feature-card hover-lift animate-fadeIn" style="animation-delay: 0.3s;">
+                    <div class="feature-icon history-icon">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <h3 class="feature-title">Lịch Sử</h3>
+                    <p class="feature-description">Xem lịch sử các trận đấu, theo dõi thành tích và xếp hạng của bạn</p>
+                    <a asp-page="/Matches/History" class="btn btn-info w-100">
+                        <i class="bi bi-arrow-right-circle"></i> Xem chi tiết
+                    </a>
+                    <div class="feature-bg-icon">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                </div>
+            </div>
+            
+            @if (User.IsInRole("Admin"))
+            {
+                <!-- Admin Panel -->
+                <div class="admin-panel mt-5 animate-slideIn">
+                    <div class="admin-header">
+                        <i class="bi bi-shield-fill-check"></i>
+                        <h3>Bảng điều khiển Admin</h3>
+                    </div>
+                    <div class="admin-body">
+                        <p class="admin-description">Quản lý và điều phối các hoạt động của câu lạc bộ</p>
+                        <div class="admin-actions">
+                            <a asp-page="/Matches/Create" class="btn btn-warning btn-lg me-3">
+                                <i class="bi bi-pencil-square"></i> Nhập kết quả trận đấu
+                            </a>
+                            <a asp-page="/Challenges/Manage" class="btn btn-secondary btn-lg">
+                                <i class="bi bi-gear-fill"></i> Quản lý kèo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        
+        <!-- Stats Section -->
+        <div class="stats-section mt-5">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h4 class="stat-number">50+</h4>
+                        <p class="stat-label">Thành viên</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="bi bi-trophy-fill"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h4 class="stat-number">200+</h4>
+                        <p class="stat-label">Trận đấu</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="bi bi-calendar-event"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h4 class="stat-number">365</h4>
+                        <p class="stat-label">Ngày hoạt động</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

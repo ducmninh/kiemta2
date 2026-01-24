@@ -1,0 +1,123 @@
+@page
+@model PCM_396.Pages.Bookings.CreateModel
+@{
+    ViewData["Title"] = "Đặt sân";
+}
+
+<!-- Page Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="text-center">
+            <h1 class="display-6 mb-2">
+                <i class="bi bi-calendar-check-fill text-success"></i>
+                Đặt sân CLB
+            </h1>
+            <p class="text-muted">
+                <i class="bi bi-clock"></i>
+                Đặt lịch chơi tại sân CLB dễ dàng
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-lg mb-4">
+            <div class="card-header bg-success text-white py-4">
+                <h4 class="mb-0">
+                    <i class="bi bi-calendar-plus me-2"></i>
+                    Tạo đặt chỗ mới
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    <div class="mb-4">
+                        <label asp-for="Input.StartTime" class="form-label fw-bold">
+                            <i class="bi bi-clock-fill text-success me-2"></i>
+                            Thời gian bắt đầu *
+                        </label>
+                        <input asp-for="Input.StartTime" type="datetime-local" class="form-control form-control-lg" required />
+                        <span asp-validation-for="Input.StartTime" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label asp-for="Input.EndTime" class="form-label fw-bold">
+                            <i class="bi bi-clock-fill text-danger me-2"></i>
+                            Thời gian kết thúc *
+                        </label>
+                        <input asp-for="Input.EndTime" type="datetime-local" class="form-control form-control-lg" required />
+                        <span asp-validation-for="Input.EndTime" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="alert alert-info border-0">
+                        <h6 class="alert-heading">
+                            <i class="bi bi-info-circle-fill me-2"></i>
+                            Lưu ý quan trọng:
+                        </h6>
+                        <ul class="mb-0">
+                            <li>Thời gian bắt đầu phải nhỏ hơn thời gian kết thúc</li>
+                            <li>Hệ thống sẽ kiểm tra trùng lịch với các booking khác</li>
+                            <li>Vui lòng đặt trước ít nhất 1 giờ</li>
+                        </ul>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="d-grid gap-3 d-md-flex justify-content-md-end">
+                        <a asp-page="/Index" class="btn btn-secondary btn-lg px-4">
+                            <i class="bi bi-x-circle me-2"></i>
+                            Hủy bỏ
+                        </a>
+                        <button type="submit" class="btn btn-success btn-lg px-5">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            Đặt sân ngay
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        @if (Model.RecentBookings.Count > 0)
+        {
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-list-ul text-primary me-2"></i>
+                        Lịch đặt sân gần đây của bạn
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        @foreach (var booking in Model.RecentBookings)
+                        {
+                            <div class="list-group-item px-0">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-2">
+                                            <i class="bi bi-calendar-check-fill text-success me-2"></i>
+                                            @booking.StartTime.ToString("dd/MM/yyyy")
+                                        </h6>
+                                        <p class="mb-0 text-muted">
+                                            <i class="bi bi-clock"></i>
+                                            <strong>Thời gian:</strong> 
+                                            @booking.StartTime.ToString("HH:mm") - @booking.EndTime.ToString("HH:mm")
+                                        </p>
+                                    </div>
+                                    <small class="text-muted">
+                                        <i class="bi bi-info-circle"></i>
+                                        Đặt ngày: @booking.CreatedDate.ToString("dd/MM HH:mm")
+                                    </small>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

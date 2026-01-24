@@ -1,0 +1,219 @@
+@page
+@model PCM_396.Pages.Members.IndexModel
+@{
+    ViewData["Title"] = "Quản lý thành viên";
+}
+
+<div class="page-wrapper animate-fadeIn">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>
+            <i class="bi bi-people-fill"></i>
+            Quản lý thành viên
+        </h1>
+        <p>Xem và quản lý danh sách tất cả thành viên trong câu lạc bộ</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card stat-card-compact">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon bg-primary">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h3 class="mb-0">@Model.Members.Count</h3>
+                            <p class="text-muted mb-0">Tổng thành viên</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stat-card-compact">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon bg-success">
+                            <i class="bi bi-trophy-fill"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h3 class="mb-0">@Model.Members.Count(m => m.RankLevel > 0)</h3>
+                            <p class="text-muted mb-0">Có xếp hạng</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stat-card-compact">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon bg-info">
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h3 class="mb-0">@(Model.Members.Any() ? Model.Members.Average(m => m.RankLevel).ToString("F1") : "0")</h3>
+                            <p class="text-muted mb-0">Điểm trung bình</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Members Table -->
+    <div class="card">
+        <div class="card-header">
+            <i class="bi bi-table"></i>
+            Danh sách thành viên
+        </div>
+        <div class="card-body p-0">
+            @if (Model.Members.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Tên đầy đủ</th>
+                                <th class="text-center">Xếp hạng</th>
+                                <th class="text-center">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int index = 1;
+                            }
+                            @foreach (var member in Model.Members.OrderByDescending(m => m.RankLevel))
+                            {
+                                <tr>
+                                    <td class="fw-bold">@index</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="member-avatar">
+                                                @member.FullName.Substring(0, 1).ToUpper()
+                                            </div>
+                                            <span class="ms-2 fw-semibold">@member.FullName</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        @if (member.RankLevel > 0)
+                                        {
+                                            <span class="rank-badge rank-badge-gold">
+                                                <i class="bi bi-star-fill"></i>
+                                                @member.RankLevel
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-secondary">Chưa xếp hạng</span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        @if (member.Status == "Active")
+                                        {
+                                            <span class="badge badge-success">
+                                                <i class="bi bi-check-circle-fill"></i> Hoạt động
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-danger">
+                                                <i class="bi bi-x-circle-fill"></i> Bị chặn
+                                            </span>
+                                        }
+                                    </td>
+                                </tr>
+                                index++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center p-5">
+                    <i class="bi bi-inbox display-1 text-muted"></i>
+                    <h4 class="mt-3">Chưa có thành viên nào</h4>
+                    <p class="text-muted">Danh sách thành viên sẽ hiển thị ở đây</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .stat-card-compact {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card-compact:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+    
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+    }
+    
+    .stat-icon.bg-primary {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    }
+    
+    .stat-icon.bg-success {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+    
+    .stat-icon.bg-info {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    }
+    
+    .member-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+    
+    .rank-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    
+    .rank-badge-gold {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+    }
+    
+    .table tbody tr {
+        transition: all 0.2s ease;
+    }
+    
+    .table tbody tr:hover {
+        background: rgba(99, 102, 241, 0.05);
+        transform: scale(1.01);
+    }
+</style>

@@ -1,0 +1,123 @@
+@page
+@model PCM_396.Pages.Challenges.ManageModel
+@{
+    ViewData["Title"] = "Quản lý Kèo (Admin)";
+}
+
+<!-- Page Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex align-items-center justify-content-between">
+            <div>
+                <h1 class="display-6 mb-2">
+                    <i class="bi bi-gear-fill text-secondary"></i>
+                    Quản lý Kèo
+                </h1>
+                <p class="text-muted mb-0">
+                    <i class="bi bi-shield-check"></i>
+                    Chức năng dành cho Admin
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filter Tabs -->
+<div class="card mb-4 border-0 shadow-sm">
+    <div class="card-body p-0">
+        <ul class="nav nav-pills nav-fill">
+            <li class="nav-item">
+                <a class="nav-link @(Model.Filter == "open" ? "active" : "")" asp-page="Manage" asp-route-filter="open">
+                    <i class="bi bi-unlock-fill me-2"></i>
+                    Open
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(Model.Filter == "accepted" ? "active" : "")" asp-page="Manage" asp-route-filter="accepted">
+                    <i class="bi bi-handshake-fill me-2"></i>
+                    Accepted
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(Model.Filter == "completed" ? "active" : "")" asp-page="Manage" asp-route-filter="completed">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    Completed
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+@if (Model.Challenges.Count == 0)
+{
+    <div class="card border-0 shadow-sm text-center p-5">
+        <div class="card-body">
+            <i class="bi bi-inbox display-1 text-muted mb-3"></i>
+            <h5>Không có kèo nào ở trạng thái này</h5>
+            <p class="text-muted">Thử chuyển sang tab khác để xem</p>
+        </div>
+    </div>
+}
+else
+{
+    <div class="card border-0 shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th><i class="bi bi-hash me-1"></i>ID</th>
+                        <th><i class="bi bi-card-heading me-1"></i>Tiêu đề</th>
+                        <th><i class="bi bi-person me-1"></i>Người tạo</th>
+                        <th><i class="bi bi-tag me-1"></i>Trạng thái</th>
+                        <th><i class="bi bi-calendar3 me-1"></i>Ngày tạo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var challenge in Model.Challenges)
+                    {
+                        <tr>
+                            <td class="fw-bold">#@challenge.Id</td>
+                            <td>
+                                <div class="fw-bold">@challenge.Title</div>
+                                @if (!string.IsNullOrEmpty(challenge.Description))
+                                {
+                                    <small class="text-muted">@challenge.Description</small>
+                                }
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-person-circle me-2 text-primary"></i>
+                                    @challenge.Creator.FullName
+                                </div>
+                            </td>
+                            <td>
+                                @switch (challenge.Status)
+                                {
+                                    case 0:
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-unlock"></i> Open
+                                        </span>
+                                        break;
+                                    case 1:
+                                        <span class="badge bg-warning text-dark">
+                                            <i class="bi bi-handshake"></i> Accepted
+                                        </span>
+                                        break;
+                                    case 2:
+                                        <span class="badge bg-secondary">
+                                            <i class="bi bi-check-circle"></i> Completed
+                                        </span>
+                                        break;
+                                }
+                            </td>
+                            <td>
+                                <small>@challenge.CreatedDate.ToString("dd/MM/yyyy")</small><br/>
+                                <small class="text-muted">@challenge.CreatedDate.ToString("HH:mm")</small>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

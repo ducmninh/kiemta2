@@ -1,0 +1,158 @@
+@page
+@model PCM_396.Pages.Challenges.IndexModel
+@{
+    ViewData["Title"] = "Sàn đấu Kèo";
+}
+
+<!-- Page Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex align-items-center justify-content-between">
+            <div>
+                <h1 class="display-6 mb-2">
+                    <i class="bi bi-fire text-danger"></i>
+                    Sàn đấu Kèo
+                </h1>
+                <p class="text-muted mb-0">
+                    <i class="bi bi-info-circle"></i>
+                    Tìm đối thủ xứng tầm và thách đấu ngay!
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        @TempData["Message"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- Action Bar -->
+<div class="card mb-4 border-0 shadow-sm">
+    <div class="card-body p-4">
+        <div class="row g-3 align-items-center">
+            <div class="col-md-4">
+                <a asp-page="Create" class="btn btn-primary btn-lg w-100">
+                    <i class="bi bi-plus-circle-fill me-2"></i>
+                    Tạo Kèo mới
+                </a>
+            </div>
+            <div class="col-md-8">
+                <form method="get" class="d-flex gap-2">
+                    <input type="text" name="searchKeyword" class="form-control form-control-lg" 
+                           placeholder="🔍 Tìm kiếm theo tiêu đề hoặc mô tả..." 
+                           value="@Model.SearchKeyword" />
+                    <button type="submit" class="btn btn-secondary btn-lg">
+                        <i class="bi bi-search"></i>
+                    </button>
+                    @if (!string.IsNullOrEmpty(Model.SearchKeyword))
+                    {
+                        <a asp-page="Index" class="btn btn-outline-danger btn-lg">
+                            <i class="bi bi-x-lg"></i>
+                        </a>
+                    }
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Challenges Grid -->
+@if (Model.Challenges.Count == 0)
+{
+    <div class="card border-0 shadow-sm text-center p-5">
+        <div class="card-body">
+            <i class="bi bi-inbox display-1 text-muted mb-3"></i>
+            <h5>Chưa có kèo nào đang mở</h5>
+            <p class="text-muted">Hãy là người đầu tiên tạo kèo thách đấu!</p>
+            <a asp-page="Create" class="btn btn-primary mt-3">
+                <i class="bi bi-plus-circle"></i> Tạo Kèo ngay
+            </a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var challenge in Model.Challenges)
+        {
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-trophy-fill text-warning me-2"></i>
+                            @challenge.Title
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text text-muted mb-3">
+                            @if (!string.IsNullOrEmpty(challenge.Description))
+                            {
+                                @challenge.Description
+                            }
+                            else
+                            {
+                                <em>Không có mô tả</em>
+                            }
+                        </p>
+                        
+                        <div class="d-flex align-items-center mb-3 p-3 bg-light rounded">
+                            <i class="bi bi-person-circle display-6 text-primary me-3"></i>
+                            <div>
+                                <div class="fw-bold">@challenge.Creator.FullName</div>
+                                <span class="badge bg-info">
+                                    <i class="bi bi-star-fill"></i> Rank @challenge.Creator.RankLevel.ToString("F1")
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="small text-muted">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span><i class="bi bi-calendar3"></i> Ngày tạo:</span>
+                                <span class="fw-bold">@challenge.CreatedDate.ToString("dd/MM/yyyy HH:mm")</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span><i class="bi bi-info-circle"></i> Trạng thái:</span>
+                                <span class="badge bg-success">
+                                    <i class="bi bi-unlock-fill"></i> Đang mở
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 pb-3">
+                        @if (Model.CurrentMember != null && challenge.CreatorId != Model.CurrentMember.Id)
+                        {
+                            <form method="post" asp-page-handler="Accept" asp-route-id="@challenge.Id">
+                                <button type="submit" class="btn btn-success w-100 btn-lg">
+                                    <i class="bi bi-hand-thumbs-up-fill me-2"></i>
+                                    Nhận Kèo
+                                </button>
+                            </form>
+                        }
+                        else if (Model.CurrentMember != null && challenge.CreatorId == Model.CurrentMember.Id)
+                        {
+                            <div class="text-center text-muted">
+                                <i class="bi bi-person-badge"></i>
+                                Đây là kèo của bạn
+                            </div>
+                        }
+                    </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
