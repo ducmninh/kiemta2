@@ -1,0 +1,575 @@
+@page
+@model PCM_396.Pages.Bookings.IndexModel
+@{
+    ViewData["Title"] = "Đặt sân";
+}
+
+<style>
+    .booking-container {
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        gap: 1.5rem;
+    }
+    
+    .booking-main {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .booking-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .booking-header h2 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .booking-subtitle {
+        color: #6c757d;
+        font-size: 0.95rem;
+    }
+    
+    .btn-new-booking {
+        background: #0d6efd;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        white-space: nowrap;
+    }
+    
+    .btn-new-booking:hover {
+        background: #0b5ed7;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+    }
+    
+    .view-tabs {
+        display: flex;
+        gap: 0.5rem;
+        background: #f8f9fa;
+        padding: 0.5rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+    }
+    
+    .tab-btn {
+        flex: 1;
+        background: transparent;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-weight: 600;
+        color: #6c757d;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .tab-btn.active {
+        background: #0d6efd;
+        color: white;
+    }
+    
+    .date-navigation {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+    }
+    
+    .nav-arrow {
+        background: white;
+        border: 1px solid #dee2e6;
+        color: #495057;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .nav-arrow:hover {
+        background: #0d6efd;
+        color: white;
+        border-color: #0d6efd;
+    }
+    
+    .current-date {
+        font-weight: 600;
+        font-size: 1.1rem;
+        min-width: 250px;
+        text-align: center;
+    }
+    
+    .btn-today {
+        background: white;
+        border: 1px solid #0d6efd;
+        color: #0d6efd;
+        padding: 0.5rem 1.25rem;
+        border-radius: 20px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .btn-today:hover {
+        background: #0d6efd;
+        color: white;
+    }
+    
+    .court-selector {
+        margin-bottom: 1.5rem;
+    }
+    
+    .court-selector label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+        color: #495057;
+    }
+    
+    .time-slots-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .time-slot {
+        background: white;
+        border: 2px solid #dee2e6;
+        border-radius: 8px;
+        padding: 1.25rem 1rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        position: relative;
+    }
+    
+    .slot-time {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+    
+    .slot-status {
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .slot-available {
+        background: #d1f4dd;
+        border-color: #28a745;
+        color: #155724;
+    }
+    
+    .slot-available:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    }
+    
+    .slot-booked {
+        background: #f8d7da;
+        border-color: #dc3545;
+        color: #721c24;
+        cursor: not-allowed;
+    }
+    
+    .slot-mine {
+        background: #d1ecf1;
+        border-color: #17a2b8;
+        color: #0c5460;
+        cursor: default;
+    }
+    
+    .slot-past {
+        background: #e9ecef;
+        border-color: #ced4da;
+        color: #6c757d;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+    
+    .booking-legend {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+    
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+    
+    .legend-color {
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+    }
+    
+    .booking-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .sidebar-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .card-info {
+        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        color: white;
+    }
+    
+    .card-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .my-bookings-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .booking-item {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 1rem;
+        position: relative;
+    }
+    
+    .booking-court {
+        font-weight: 700;
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .booking-time {
+        font-size: 0.9rem;
+        opacity: 0.95;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .booking-date {
+        font-size: 0.8rem;
+        opacity: 0.8;
+    }
+    
+    .btn-delete-booking {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        background: rgba(220, 53, 69, 0.2);
+        border: none;
+        color: #dc3545;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .btn-delete-booking:hover {
+        background: #dc3545;
+        color: white;
+    }
+    
+    .stat-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+    
+    .stat-box {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        text-align: center;
+    }
+    
+    .stat-success {
+        background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+        color: white;
+    }
+    
+    .stat-info {
+        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        color: white;
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+        font-size: 0.85rem;
+        opacity: 0.95;
+        font-weight: 600;
+    }
+    
+    @@media (max-width: 1200px) {
+        .booking-container {
+            grid-template-columns: 1fr;
+        }
+        
+        .time-slots-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+</style>
+
+<div class="booking-container">
+    <!-- Main Content -->
+    <div class="booking-main">
+        <!-- Header -->
+        <div class="booking-header">
+            <div>
+                <h2>
+                    <i class="bi bi-calendar-check-fill text-primary"></i>
+                    Đặt sân
+                </h2>
+                <p class="booking-subtitle">Xem lịch và đặt sân pickleball</p>
+            </div>
+            <a asp-page="Create" class="btn-new-booking">
+                <i class="bi bi-plus-circle-fill"></i>
+                Đặt sân mới
+            </a>
+        </div>
+
+        <!-- View Tabs -->
+        <div class="view-tabs">
+            <button class="tab-btn active">
+                <i class="bi bi-calendar-day"></i>
+                Ngày
+            </button>
+            <button class="tab-btn">
+                <i class="bi bi-calendar-week"></i>
+                Tuần
+            </button>
+            <button class="tab-btn">
+                <i class="bi bi-calendar-month"></i>
+                Tháng
+            </button>
+        </div>
+
+        <!-- Date Navigation -->
+        <div class="date-navigation">
+            <button class="nav-arrow">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+            <div class="current-date">
+                Thứ Sáu, 30 tháng 1, 2026
+            </div>
+            <button class="nav-arrow">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+            <button class="btn-today">
+                Hôm nay
+            </button>
+        </div>
+
+        <!-- Court Selection -->
+        <div class="court-selector">
+            <label>Chọn sân</label>
+            <select class="form-select">
+                <option value="1" selected>Sân 1</option>
+                <option value="2">Sân 2</option>
+                <option value="3">Sân 3</option>
+                <option value="4">Sân 4</option>
+            </select>
+        </div>
+
+        <!-- Time Slots Grid -->
+        <div class="time-slots-grid">
+            @foreach (var slot in Model.TimeSlots)
+            {
+                var cssClass = "time-slot";
+                var statusText = "";
+                var canBook = true;
+                
+                if (slot.IsPast)
+                {
+                    cssClass += " slot-past";
+                    statusText = "Quá giờ";
+                    canBook = false;
+                }
+                else if (slot.IsBooked)
+                {
+                    if (slot.IsMine)
+                    {
+                        cssClass += " slot-mine";
+                        statusText = "Của tôi";
+                        canBook = false;
+                    }
+                    else
+                    {
+                        cssClass += " slot-booked";
+                        statusText = "Đã đặt";
+                        canBook = false;
+                    }
+                }
+                else
+                {
+                    cssClass += " slot-available";
+                    statusText = "Trống";
+                }
+
+                <div class="@cssClass" onclick="@(canBook ? $"bookSlot('{slot.StartTime:yyyy-MM-ddTHH:mm}', '{slot.EndTime:yyyy-MM-ddTHH:mm}')" : "")">
+                    <div class="slot-time">@slot.StartTime.ToString("HH:mm")</div>
+                    <div class="slot-status">@statusText</div>
+                </div>
+            }
+        </div>
+
+        <!-- Legend -->
+        <div class="booking-legend">
+            <div class="legend-item">
+                <span class="legend-color" style="background: #28a745;"></span>
+                <span>Trống</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background: #dc3545;"></span>
+                <span>Đã đặt</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background: #17a2b8;"></span>
+                <span>Của tôi</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background: #6c757d;"></span>
+                <span>Quá giờ</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="booking-sidebar">
+        <!-- My Bookings Card -->
+        <div class="sidebar-card card-info">
+            <h3 class="card-title">
+                <i class="bi bi-calendar-check"></i>
+                Lịch đặt của tôi
+            </h3>
+            
+            @if (Model.MyUpcomingBookings.Any())
+            {
+                <div class="my-bookings-list">
+                    @foreach (var booking in Model.MyUpcomingBookings.Take(3))
+                    {
+                        <div class="booking-item">
+                            <div class="booking-court">
+                                <i class="bi bi-geo-alt-fill"></i>
+                                Sân 3
+                            </div>
+                            <div class="booking-time">
+                                <i class="bi bi-clock-fill"></i>
+                                @booking.StartTime.ToString("HH:mm") - @booking.EndTime.ToString("HH:mm")
+                            </div>
+                            <div class="booking-date">
+                                @booking.StartTime.ToString("dd/MM/yyyy")
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-center mt-3 mb-0" style="opacity: 0.8;">
+                    <i class="bi bi-info-circle"></i>
+                    N/A
+                </p>
+            }
+        </div>
+
+        <!-- Statistics Card -->
+        <div class="sidebar-card">
+            <h3 class="card-title">
+                Thống kê nhanh
+            </h3>
+            
+            <div class="stat-row">
+                <div class="stat-box stat-success">
+                    <div class="stat-number">@Model.TotalAvailableSlots</div>
+                    <div class="stat-label">Slot trống hôm nay</div>
+                </div>
+                
+                <div class="stat-box stat-info">
+                    <div class="stat-number">@Model.MyTotalBookings</div>
+                    <div class="stat-label">Booking của tôi</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Action -->
+        <a asp-page="Create" class="btn btn-primary btn-lg w-100">
+            <i class="bi bi-plus-circle-fill"></i>
+            Đặt sân mới
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function bookSlot(startTime, endTime) {
+            window.location.href = `/Bookings/Create?startTime=${startTime}&endTime=${endTime}`;
+        }
+    </script>
+}

@@ -27,17 +27,22 @@
                             @if (User.IsInRole("Member") || User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-page="/News/Index">
+                                        <i class="bi bi-newspaper"></i> Tin tức
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link" asp-area="" asp-page="/Challenges/Index">
-                                        <i class="bi bi-fire"></i> Tìm Kèo
+                                        <i class="bi bi-fire"></i> Kèo
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" asp-area="" asp-page="/Matches/History">
-                                        <i class="bi bi-clock-history"></i> Lịch sử đấu
+                                        <i class="bi bi-clock-history"></i> Lịch sử
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-page="/Bookings/Create">
+                                    <a class="nav-link" asp-area="" asp-page="/Bookings/Index">
                                         <i class="bi bi-calendar-check"></i> Đặt sân
                                     </a>
                                 </li>
@@ -46,17 +51,22 @@
                             {
                                 <li class="nav-item">
                                     <a class="nav-link" asp-area="" asp-page="/Matches/Create">
-                                        <i class="bi bi-pencil-square"></i> Nhập kết quả (Ref)
+                                        <i class="bi bi-pencil-square"></i> Nhập KQ
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" asp-area="" asp-page="/Challenges/Manage">
-                                        <i class="bi bi-gear-fill"></i> Quản lý kèo
+                                        <i class="bi bi-gear-fill"></i> QL Kèo
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" asp-area="" asp-page="/Members/Index">
-                                        <i class="bi bi-people-fill"></i> Quản lý thành viên
+                                        <i class="bi bi-people-fill"></i> QL TV
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-page="/Transactions/Index">
+                                        <i class="bi bi-cash-stack"></i> Tài chính
                                     </a>
                                 </li>
                             }

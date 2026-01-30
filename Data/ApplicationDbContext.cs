@@ -15,6 +15,7 @@ namespace PCM_396.Data
         public DbSet<Challenge> Challenges { get; set; }
         public DbSet<Match> Matches { get; set; }
         public DbSet<Booking> Bookings { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

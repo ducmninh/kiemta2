@@ -1,0 +1,308 @@
+@page
+@model PCM_396.Pages.News.IndexModel
+@{
+    ViewData["Title"] = "Tin tức CLB";
+}
+
+<!-- Page Header -->
+<div class="page-header bg-gradient-primary text-white rounded-4 shadow-lg mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="display-5 mb-2">
+                <i class="bi bi-newspaper"></i>
+                Tin tức CLB Pickleball
+            </h1>
+            <p class="lead mb-0">
+                <i class="bi bi-calendar-event"></i>
+                Cập nhật trận đấu và kèo hôm nay - @DateTime.Today.ToString("dd/MM/yyyy")
+            </p>
+        </div>
+        <div>
+            <i class="bi bi-trophy-fill display-3 opacity-50"></i>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Today's Matches Section -->
+    <div class="col-lg-7">
+        <div class="card border-0 shadow-lg rounded-4 mb-4">
+            <div class="card-header bg-success text-white py-3 rounded-top-4">
+                <h3 class="mb-0">
+                    <i class="bi bi-fire"></i>
+                    Trận đấu hôm nay
+                </h3>
+            </div>
+            <div class="card-body p-4">
+                @if (Model.TodayMatches.Any())
+                {
+                    <div class="matches-list">
+                        @foreach (var match in Model.TodayMatches)
+                        {
+                            <div class="match-card mb-3 p-4 bg-light rounded-3 border border-2 border-success">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="badge bg-primary fs-6">
+                                        <i class="bi bi-trophy-fill"></i>
+                                        @(match.Format == 0 ? "Đơn (1vs1)" : "Đôi (2vs2)")
+                                    </span>
+                                    <span class="text-muted">
+                                        <i class="bi bi-clock-fill"></i>
+                                        @match.MatchDate.ToString("HH:mm")
+                                    </span>
+                                </div>
+
+                                @if (match.Format == 0)
+                                {
+                                    <!-- Single Match -->
+                                    <div class="row text-center">
+                                        <div class="col-5">
+                                            <div class="player-info p-3 bg-success text-white rounded-3">
+                                                <i class="bi bi-person-fill fs-3"></i>
+                                                <h5 class="mb-1 mt-2">@match.Winner1?.FullName</h5>
+                                                <span class="badge bg-warning text-dark">
+                                                    <i class="bi bi-trophy-fill"></i> Thắng
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 d-flex align-items-center justify-content-center">
+                                            <h2 class="text-primary mb-0">VS</h2>
+                                        </div>
+                                        <div class="col-5">
+                                            <div class="player-info p-3 bg-white rounded-3">
+                                                <i class="bi bi-person-fill fs-3"></i>
+                                                <h5 class="mb-1 mt-2">@match.Loser1?.FullName</h5>
+                                                <span class="badge bg-secondary">Thua</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <!-- Doubles Match -->
+                                    <div class="row text-center">
+                                        <div class="col-5">
+                                            <div class="team-info p-3 bg-success text-white rounded-3">
+                                                <i class="bi bi-people-fill fs-3"></i>
+                                                <h6 class="mb-1 mt-2">Đội Thắng</h6>
+                                                <p class="mb-0 small">@match.Winner1?.FullName</p>
+                                                <p class="mb-0 small">@match.Winner2?.FullName</p>
+                                                <span class="badge bg-warning text-dark mt-2">
+                                                    <i class="bi bi-trophy-fill"></i> Thắng
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 d-flex align-items-center justify-content-center">
+                                            <h2 class="text-primary mb-0">VS</h2>
+                                        </div>
+                                        <div class="col-5">
+                                            <div class="team-info p-3 bg-white rounded-3">
+                                                <i class="bi bi-people-fill fs-3"></i>
+                                                <h6 class="mb-1 mt-2">Đội Thua</h6>
+                                                <p class="mb-0 small">@match.Loser1?.FullName</p>
+                                                <p class="mb-0 small">@match.Loser2?.FullName</p>
+                                                <span class="badge bg-secondary mt-2">Thua</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+                                @if (match.Challenge != null)
+                                {
+                                    <div class="alert alert-info mt-3 mb-0">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                        <strong>Từ kèo:</strong> @match.Challenge.Title
+                                        @if (!string.IsNullOrEmpty(match.Challenge.Description))
+                                        {
+                                            <span> - @match.Challenge.Description</span>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="bi bi-inbox display-1 text-muted"></i>
+                        <p class="text-muted mt-3 fs-5">Chưa có trận đấu nào hôm nay</p>
+                        <p class="text-muted">Hãy tham gia kèo đấu hoặc đợi admin ghi nhận kết quả!</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Match Statistics -->
+        <div class="card border-0 shadow-lg rounded-4">
+            <div class="card-header bg-info text-white py-3 rounded-top-4">
+                <h4 class="mb-0">
+                    <i class="bi bi-graph-up-arrow"></i>
+                    Thống kê hôm nay
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <div class="stat-box p-3 bg-primary bg-gradient text-white rounded-3">
+                            <h2 class="mb-0">@Model.TodayMatches.Count</h2>
+                            <p class="mb-0 small">Trận đã đấu</p>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="stat-box p-3 bg-success bg-gradient text-white rounded-3">
+                            <h2 class="mb-0">@Model.OpenChallenges.Count</h2>
+                            <p class="mb-0 small">Kèo đang mở</p>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="stat-box p-3 bg-warning bg-gradient text-white rounded-3">
+                            <h2 class="mb-0">@Model.AcceptedChallenges.Count</h2>
+                            <p class="mb-0 small">Kèo đã nhận</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Challenges Section -->
+    <div class="col-lg-5">
+        <!-- Open Challenges -->
+        <div class="card border-0 shadow-lg rounded-4 mb-4">
+            <div class="card-header bg-warning text-dark py-3 rounded-top-4">
+                <h3 class="mb-0">
+                    <i class="bi bi-fire"></i>
+                    Kèo đang mở
+                </h3>
+            </div>
+            <div class="card-body p-4">
+                @if (Model.OpenChallenges.Any())
+                {
+                    <div class="challenges-list">
+                        @foreach (var challenge in Model.OpenChallenges.Take(5))
+                        {
+                            <div class="challenge-card mb-3 p-3 bg-light rounded-3 border-start border-4 border-warning">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="mb-0 text-primary">
+                                        <i class="bi bi-person-circle"></i>
+                                        @challenge.Creator?.FullName
+                                    </h6>
+                                    <span class="badge bg-success">Open</span>
+                                </div>
+                                <h6 class="mb-1">@challenge.Title</h6>
+                                @if (!string.IsNullOrEmpty(challenge.Description))
+                                {
+                                    <p class="mb-2 small">
+                                        <i class="bi bi-chat-left-text"></i>
+                                        @challenge.Description
+                                    </p>
+                                }
+                                <small class="text-muted">
+                                    <i class="bi bi-clock"></i>
+                                    @challenge.CreatedDate.ToString("dd/MM HH:mm")
+                                </small>
+                            </div>
+                        }
+                    </div>
+                    
+                    @if (Model.OpenChallenges.Count > 5)
+                    {
+                        <div class="text-center mt-3">
+                            <a asp-page="/Challenges/Index" class="btn btn-outline-primary">
+                                Xem tất cả @Model.OpenChallenges.Count kèo
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-center py-4">
+                        <i class="bi bi-inbox display-4 text-muted"></i>
+                        <p class="text-muted mt-2">Chưa có kèo nào đang mở</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Accepted Challenges -->
+        <div class="card border-0 shadow-lg rounded-4">
+            <div class="card-header bg-primary text-white py-3 rounded-top-4">
+                <h3 class="mb-0">
+                    <i class="bi bi-check-circle-fill"></i>
+                    Kèo đã nhận
+                </h3>
+            </div>
+            <div class="card-body p-4">
+                @if (Model.AcceptedChallenges.Any())
+                {
+                    <div class="challenges-list">
+                        @foreach (var challenge in Model.AcceptedChallenges.Take(5))
+                        {
+                            <div class="challenge-card mb-3 p-3 bg-light rounded-3 border-start border-4 border-primary">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="mb-0 text-success">
+                                        <i class="bi bi-person-circle"></i>
+                                        @challenge.Creator?.FullName
+                                    </h6>
+                                    <span class="badge bg-info">Accepted</span>
+                                </div>
+                                <h6 class="mb-1">@challenge.Title</h6>
+                                @if (!string.IsNullOrEmpty(challenge.Description))
+                                {
+                                    <p class="mb-2 small">
+                                        <i class="bi bi-chat-left-text"></i>
+                                        @challenge.Description
+                                    </p>
+                                }
+                                <small class="text-muted">
+                                    <i class="bi bi-clock"></i>
+                                    @challenge.CreatedDate.ToString("dd/MM HH:mm")
+                                </small>
+                            </div>
+                        }
+                    </div>
+                    
+                    @if (Model.AcceptedChallenges.Count > 5)
+                    {
+                        <div class="text-center mt-3">
+                            <a asp-page="/Challenges/Index" class="btn btn-outline-primary">
+                                Xem tất cả @Model.AcceptedChallenges.Count kèo
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-center py-4">
+                        <i class="bi bi-inbox display-4 text-muted"></i>
+                        <p class="text-muted mt-2">Chưa có kèo nào được nhận</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row g-3 mt-4">
+    <div class="col-md-4">
+        <a asp-page="/Challenges/Create" class="btn btn-lg btn-warning w-100 py-3">
+            <i class="bi bi-plus-circle-fill"></i>
+            Tạo kèo mới
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a asp-page="/Challenges/Index" class="btn btn-lg btn-success w-100 py-3">
+            <i class="bi bi-search"></i>
+            Tìm kèo đấu
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a asp-page="/Matches/History" class="btn btn-lg btn-info w-100 py-3">
+            <i class="bi bi-clock-history"></i>
+            Lịch sử trận đấu
+        </a>
+    </div>
+</div>

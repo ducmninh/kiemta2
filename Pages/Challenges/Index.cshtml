@@ -86,73 +86,84 @@
 }
 else
 {
-    <div class="row g-4">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         @foreach (var challenge in Model.Challenges)
         {
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">
-                            <i class="bi bi-trophy-fill text-warning me-2"></i>
-                            @challenge.Title
-                        </h5>
+            <div class="col">
+                <div class="card challenge-card h-100 border-0 shadow-sm">
+                    <!-- Card Header -->
+                    <div class="card-header bg-gradient text-white border-0 p-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-trophy-fill fs-5"></i>
+                            <h5 class="card-title mb-0 fw-bold">@challenge.Title</h5>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <p class="card-text text-muted mb-3">
-                            @if (!string.IsNullOrEmpty(challenge.Description))
-                            {
-                                @challenge.Description
-                            }
-                            else
-                            {
-                                <em>Không có mô tả</em>
-                            }
-                        </p>
+                    
+                    <!-- Card Body -->
+                    <div class="card-body p-3">
+                        <!-- Description -->
+                        @if (!string.IsNullOrEmpty(challenge.Description))
+                        {
+                            <p class="card-text text-muted small mb-3">@challenge.Description</p>
+                        }
                         
-                        <div class="d-flex align-items-center mb-3 p-3 bg-light rounded">
-                            <i class="bi bi-person-circle display-6 text-primary me-3"></i>
-                            <div>
-                                <div class="fw-bold">@challenge.Creator.FullName</div>
-                                <span class="badge bg-info">
+                        <!-- Creator Info -->
+                        <div class="d-flex align-items-center gap-2 mb-3 p-2 bg-light rounded">
+                            <i class="bi bi-person-circle fs-4 text-primary"></i>
+                            <div class="flex-grow-1">
+                                <div class="fw-semibold small">@challenge.Creator.FullName</div>
+                                <div class="text-warning small">
                                     <i class="bi bi-star-fill"></i> Rank @challenge.Creator.RankLevel.ToString("F1")
-                                </span>
+                                </div>
                             </div>
                         </div>
                         
-                        <div class="small text-muted">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span><i class="bi bi-calendar3"></i> Ngày tạo:</span>
-                                <span class="fw-bold">@challenge.CreatedDate.ToString("dd/MM/yyyy HH:mm")</span>
+                        <!-- Meta Info -->
+                        <div class="challenge-meta small">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <i class="bi bi-calendar3 text-muted"></i>
+                                <span class="text-muted">Ngày tạo:</span>
+                                <span class="fw-semibold ms-auto">@challenge.CreatedDate.ToString("dd/MM/yyyy HH:mm")</span>
                             </div>
-                            <div class="d-flex justify-content-between">
-                                <span><i class="bi bi-info-circle"></i> Trạng thái:</span>
-                                <span class="badge bg-success">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-circle-fill text-success" style="font-size: 0.5rem;"></i>
+                                <span class="text-muted">Trạng thái:</span>
+                                <span class="badge bg-success ms-auto">
                                     <i class="bi bi-unlock-fill"></i> Đang mở
                                 </span>
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer bg-transparent border-0 pb-3">
+                    
+                    <!-- Card Footer -->
+                    <div class="card-footer bg-white border-0 p-3 pt-0">
                         @if (Model.CurrentMember != null && challenge.CreatorId != Model.CurrentMember.Id)
                         {
                             <form method="post" asp-page-handler="Accept" asp-route-id="@challenge.Id">
-                                <button type="submit" class="btn btn-success w-100 btn-lg">
-                                    <i class="bi bi-hand-thumbs-up-fill me-2"></i>
+                                <button type="submit" class="btn btn-success w-100">
+                                    <i class="bi bi-hand-thumbs-up-fill me-1"></i>
                                     Nhận Kèo
                                 </button>
                             </form>
                         }
                         else if (Model.CurrentMember != null && challenge.CreatorId == Model.CurrentMember.Id)
                         {
-                            <div class="text-center text-muted">
+                            <div class="text-center text-muted small">
                                 <i class="bi bi-person-badge"></i>
                                 Đây là kèo của bạn
                             </div>
                         }
-                    </div>
+                        else
+                        {
+                            <a href="/Identity/Account/Login" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-box-arrow-in-right me-1"></i>
+                                Đăng nhập để nhận kèo
+                            </a>
+                        }
                     </div>
                 </div>
-            }
-        </div>
-    }
+            </div>
+        }
+    </div>
+}
 </div>

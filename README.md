@@ -1,4 +1,4 @@
-# PCM_396 - Hệ thống Quản lý CLB Pickleball "Vợt Thủ Phô Nữi"
+# PCM_396 - Hệ thống Quản lý CLB Pickleball "Vợt Thủ Phô Núi"
 
 ## 🎯 HƯỚNG DẪN NHANH CHO GIẢNG VIÊN
 

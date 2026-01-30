@@ -30,14 +30,26 @@ namespace PCM_396.Pages.Bookings
         public class InputModel
         {
             [Required(ErrorMessage = "Vui lòng chọn thời gian bắt đầu")]
-            public DateTime StartTime { get; set; } = DateTime.Now.AddHours(1);
+            public DateTime StartTime { get; set; }
 
             [Required(ErrorMessage = "Vui lòng chọn thời gian kết thúc")]
-            public DateTime EndTime { get; set; } = DateTime.Now.AddHours(2);
+            public DateTime EndTime { get; set; }
         }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(DateTime? startTime, DateTime? endTime)
         {
+            // Set values from URL parameters or defaults
+            if (startTime.HasValue && endTime.HasValue)
+            {
+                Input.StartTime = startTime.Value;
+                Input.EndTime = endTime.Value;
+            }
+            else
+            {
+                Input.StartTime = DateTime.Now.AddHours(1);
+                Input.EndTime = DateTime.Now.AddHours(2);
+            }
+
             var user = await _userManager.GetUserAsync(User);
             if (user != null)
             {
@@ -61,7 +73,7 @@ namespace PCM_396.Pages.Bookings
             if (Input.StartTime >= Input.EndTime)
             {
                 ModelState.AddModelError(string.Empty, "Thời gian bắt đầu phải nhỏ hơn thời gian kết thúc");
-                await OnGetAsync();
+                await OnGetAsync(null, null);
                 return Page();
             }
 
@@ -69,7 +81,7 @@ namespace PCM_396.Pages.Bookings
             if (Input.StartTime < DateTime.Now)
             {
                 ModelState.AddModelError(string.Empty, "Không thể đặt sân trong quá khứ");
-                await OnGetAsync();
+                await OnGetAsync(null, null);
                 return Page();
             }
 
@@ -100,13 +112,13 @@ namespace PCM_396.Pages.Bookings
             {
                 // Lỗi trùng lịch
                 ModelState.AddModelError(string.Empty, ex.Message);
-                await OnGetAsync();
+                await OnGetAsync(null, null);
                 return Page();
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, $"Có lỗi xảy ra: {ex.Message}");
-                await OnGetAsync();
+                await OnGetAsync(null, null);
                 return Page();
             }
         }

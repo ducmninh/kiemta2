@@ -38,6 +38,7 @@ builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<IChallengeService, ChallengeService>();
 builder.Services.AddScoped<IMatchService, MatchService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
 
 var app = builder.Build();
 
