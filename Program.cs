@@ -101,7 +101,6 @@ using (var scope = app.Services.CreateScope())
             // Tạo Identity Users và Members
             var users = new List<(string email, string password, string fullName, double rank, string role)>
             {
-                ("admin@pcm.vn", "Admin123", "Nguyễn Văn Admin", 5.5, "Admin"),
                 ("ducminh@pcm.vn", "Member123", "Đức Minh", 3.2, "Member"),
                 ("thuha@pcm.vn", "Member123", "Thu Hà", 2.8, "Member"),
                 ("vanlong@pcm.vn", "Member123", "Văn Long", 4.1, "Member"),
@@ -146,7 +145,7 @@ using (var scope = app.Services.CreateScope())
             {
                 new PCM_396.Models.Challenge
                 {
-                    CreatorId = membersList[1].Id,
+                    CreatorId = membersList[0].Id,
                     Title = "Thách đấu cuối tuần - Ai dám nhận?",
                     Description = "Tôi chấp nửa trái, đấu Singles. Thứ 7 này 9AM tại sân CLB.",
                     Status = 0, // Open
@@ -154,7 +153,7 @@ using (var scope = app.Services.CreateScope())
                 },
                 new PCM_396.Models.Challenge
                 {
-                    CreatorId = membersList[2].Id,
+                    CreatorId = membersList[1].Id,
                     Title = "Doubles 2vs2 - Tìm đối thủ mạnh",
                     Description = "Team mình rank 3.0+ cần tìm đối thủ xứng tầm cho trận Doubles.",
                     Status = 1, // Accepted
@@ -162,7 +161,7 @@ using (var scope = app.Services.CreateScope())
                 },
                 new PCM_396.Models.Challenge
                 {
-                    CreatorId = membersList[3].Id,
+                    CreatorId = membersList[2].Id,
                     Title = "Challenge cho người mới - Friendly match",
                     Description = "Trận giao hữu không tính điểm, ai mới chơi đều được nhận.",
                     Status = 0, // Open
@@ -170,7 +169,7 @@ using (var scope = app.Services.CreateScope())
                 },
                 new PCM_396.Models.Challenge
                 {
-                    CreatorId = membersList[4].Id,
+                    CreatorId = membersList[3].Id,
                     Title = "Đấu tranh top 1 - Rank 4.0+",
                     Description = "Chỉ nhận thách đấu từ người có rank 4.0 trở lên. Có giải thưởng!",
                     Status = 2, // Completed
@@ -181,85 +180,91 @@ using (var scope = app.Services.CreateScope())
             context.Challenges.AddRange(challenges);
             await context.SaveChangesAsync();
 
-            // Tạo Matches mẫu
-            var matches = new List<PCM_396.Models.Match>
+            // Tạo Matches mẫu (chỉ nếu có đủ members)
+            if (membersList.Count >= 7)
             {
-                // Match Singles
-                new PCM_396.Models.Match
+                var matches = new List<PCM_396.Models.Match>
                 {
-                    MatchDate = DateTime.Now.AddDays(-4),
-                    Format = 0, // Singles
-                    IsRanked = true,
-                    ChallengeId = challenges[3].Id,
-                    Winner1Id = membersList[4].Id,
-                    Loser1Id = membersList[3].Id
-                },
-                // Match Doubles
-                new PCM_396.Models.Match
-                {
-                    MatchDate = DateTime.Now.AddDays(-3),
-                    Format = 1, // Doubles
-                    IsRanked = true,
-                    ChallengeId = challenges[1].Id,
-                    Winner1Id = membersList[5].Id,
-                    Winner2Id = membersList[6].Id,
-                    Loser1Id = membersList[1].Id,
-                    Loser2Id = membersList[2].Id
-                },
-                // Match Singles không tính điểm
-                new PCM_396.Models.Match
-                {
-                    MatchDate = DateTime.Now.AddDays(-2),
-                    Format = 0, // Singles
-                    IsRanked = false,
-                    Winner1Id = membersList[7].Id,
-                    Loser1Id = membersList[5].Id
-                }
-            };
+                    // Match Singles
+                    new PCM_396.Models.Match
+                    {
+                        MatchDate = DateTime.Now.AddDays(-4),
+                        Format = 0, // Singles
+                        IsRanked = true,
+                        ChallengeId = challenges[3].Id,
+                        Winner1Id = membersList[3].Id,
+                        Loser1Id = membersList[2].Id
+                    },
+                    // Match Doubles
+                    new PCM_396.Models.Match
+                    {
+                        MatchDate = DateTime.Now.AddDays(-3),
+                        Format = 1, // Doubles
+                        IsRanked = true,
+                        ChallengeId = challenges[1].Id,
+                        Winner1Id = membersList[4].Id,
+                        Winner2Id = membersList[5].Id,
+                        Loser1Id = membersList[0].Id,
+                        Loser2Id = membersList[1].Id
+                    },
+                    // Match Singles không tính điểm
+                    new PCM_396.Models.Match
+                    {
+                        MatchDate = DateTime.Now.AddDays(-2),
+                        Format = 0, // Singles
+                        IsRanked = false,
+                        Winner1Id = membersList[6].Id,
+                        Loser1Id = membersList[4].Id
+                    }
+                };
 
-            context.Matches.AddRange(matches);
-            await context.SaveChangesAsync();
+                context.Matches.AddRange(matches);
+                await context.SaveChangesAsync();
+            }
 
-            // Tạo Bookings mẫu
-            var bookings = new List<PCM_396.Models.Booking>
+            // Tạo Bookings mẫu (chỉ nếu có đủ members)
+            if (membersList.Count >= 4)
             {
-                new PCM_396.Models.Booking
+                var bookings = new List<PCM_396.Models.Booking>
                 {
-                    MemberId = membersList[1].Id,
-                    StartTime = DateTime.Now.AddDays(1).Date.AddHours(9),
-                    EndTime = DateTime.Now.AddDays(1).Date.AddHours(11),
-                    CreatedDate = DateTime.Now.AddHours(-2)
-                },
-                new PCM_396.Models.Booking
-                {
-                    MemberId = membersList[2].Id,
-                    StartTime = DateTime.Now.AddDays(1).Date.AddHours(14),
-                    EndTime = DateTime.Now.AddDays(1).Date.AddHours(16),
-                    CreatedDate = DateTime.Now.AddHours(-3)
-                },
-                new PCM_396.Models.Booking
-                {
-                    MemberId = membersList[3].Id,
-                    StartTime = DateTime.Now.AddDays(2).Date.AddHours(8),
-                    EndTime = DateTime.Now.AddDays(2).Date.AddHours(10),
-                    CreatedDate = DateTime.Now.AddHours(-1)
-                },
-                new PCM_396.Models.Booking
-                {
-                    MemberId = membersList[4].Id,
-                    StartTime = DateTime.Now.AddDays(2).Date.AddHours(16),
-                    EndTime = DateTime.Now.AddDays(2).Date.AddHours(18),
-                    CreatedDate = DateTime.Now.AddMinutes(-30)
-                }
-            };
+                    new PCM_396.Models.Booking
+                    {
+                        MemberId = membersList[0].Id,
+                        StartTime = DateTime.Now.AddDays(1).Date.AddHours(9),
+                        EndTime = DateTime.Now.AddDays(1).Date.AddHours(11),
+                        CreatedDate = DateTime.Now.AddHours(-2)
+                    },
+                    new PCM_396.Models.Booking
+                    {
+                        MemberId = membersList[1].Id,
+                        StartTime = DateTime.Now.AddDays(1).Date.AddHours(14),
+                        EndTime = DateTime.Now.AddDays(1).Date.AddHours(16),
+                        CreatedDate = DateTime.Now.AddHours(-3)
+                    },
+                    new PCM_396.Models.Booking
+                    {
+                        MemberId = membersList[2].Id,
+                        StartTime = DateTime.Now.AddDays(2).Date.AddHours(8),
+                        EndTime = DateTime.Now.AddDays(2).Date.AddHours(10),
+                        CreatedDate = DateTime.Now.AddHours(-1)
+                    },
+                    new PCM_396.Models.Booking
+                    {
+                        MemberId = membersList[3].Id,
+                        StartTime = DateTime.Now.AddDays(2).Date.AddHours(16),
+                        EndTime = DateTime.Now.AddDays(2).Date.AddHours(18),
+                        CreatedDate = DateTime.Now.AddMinutes(-30)
+                    }
+                };
 
-            context.Bookings.AddRange(bookings);
-            await context.SaveChangesAsync();
+                context.Bookings.AddRange(bookings);
+                await context.SaveChangesAsync();
 
-            var logger = services.GetRequiredService<ILogger<Program>>();
-            logger.LogInformation("✅ Seed data completed successfully!");
-            logger.LogInformation("📊 Created: {MemberCount} members, {ChallengeCount} challenges, {MatchCount} matches, {BookingCount} bookings",
-                membersList.Count, challenges.Count, matches.Count, bookings.Count);
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                logger.LogInformation("✅ Seed data completed successfully!");
+                logger.LogInformation("📊 Created: {MemberCount} members, {ChallengeCount} challenges, {MatchCount} matches, {BookingCount} bookings",
+                    membersList.Count, challenges.Count, 3, bookings.Count);
+            }
         }
     }
     catch (Exception ex)
