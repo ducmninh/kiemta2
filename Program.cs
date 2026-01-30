@@ -7,6 +7,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddControllers();
+
+// Cấu hình Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "PCM 396 API",
+        Version = "v1",
+        Description = "Badminton Club Management System API"
+    });
+});
 
 // Đăng ký DbContext với In-Memory Database (không cần SQL Server)
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -281,6 +294,14 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+// Cấu hình Swagger UI
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "PCM 396 API v1");
+    c.RoutePrefix = "swagger";
+});
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -290,5 +311,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.MapControllers();
 
 app.Run();
