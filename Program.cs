@@ -8,9 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 
-// Đăng ký DbContext
+// Đăng ký DbContext với In-Memory Database (không cần SQL Server)
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseInMemoryDatabase("PCM_InMemoryDb"));
 
 // Đăng ký Identity
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>

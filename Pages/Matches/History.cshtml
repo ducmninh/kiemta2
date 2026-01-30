@@ -4,23 +4,19 @@
     ViewData["Title"] = "Lịch sử trận đấu";
 }
 
-<!-- Page Header -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="d-flex align-items-center justify-content-between">
+<div class="match-history-page">
+    <!-- Page Header -->
+    <div class="match-history-header mb-4">
+        <div class="d-flex align-items-center gap-3">
+            <div class="header-icon">
+                <i class="bi bi-clock-history"></i>
+            </div>
             <div>
-                <h1 class="display-6 mb-2">
-                    <i class="bi bi-clock-history text-info"></i>
-                    Lịch sử trận đấu
-                </h1>
-                <p class="text-muted mb-0">
-                    <i class="bi bi-list-check"></i>
-                    Xem lại tất cả các trận đấu đã diễn ra
-                </p>
+                <h1 class="page-title mb-1">Lịch sử trận đấu</h1>
+                <p class="page-subtitle mb-0">Xem lại tất cả các trận đấu đã diễn ra</p>
             </div>
         </div>
     </div>
-</div>
 
 @if (TempData["Message"] != null)
 {
@@ -33,164 +29,486 @@
 
 @if (Model.Matches.Count == 0)
 {
-    <div class="card border-0 shadow-sm text-center p-5">
-        <div class="card-body">
-            <i class="bi bi-inbox display-1 text-muted mb-3"></i>
-            <h5>Chưa có trận đấu nào được ghi nhận</h5>
-            <p class="text-muted">Các trận đấu sẽ được trọng tài ghi nhận sau khi kết thúc</p>
+    <div class="empty-state-card">
+        <div class="empty-icon">
+            <i class="bi bi-inbox"></i>
         </div>
+        <h5 class="empty-title">Chưa có trận đấu nào</h5>
+        <p class="empty-text">Các trận đấu sẽ được ghi nhận sau khi kết thúc</p>
     </div>
 }
 else
 {
-    <div class="row g-4">
+    <div class="matches-container">
         @foreach (var match in Model.Matches)
         {
-            <div class="col-12">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-light">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                @if (match.Format == (int)PCM_396.Models.MatchFormat.Singles)
-                                {
-                                    <span class="badge bg-primary me-2">
-                                        <i class="bi bi-person"></i> Đơn (Singles)
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-info me-2">
-                                        <i class="bi bi-people"></i> Đôi (Doubles)
-                                    </span>
-                                }
-                                
-                                @if (match.IsRanked)
-                                {
-                                    <span class="badge bg-warning text-dark">
-                                        <i class="bi bi-star-fill"></i> Tính điểm
-                                    </span>
-                                }
-                                
-                                @if (match.Challenge != null)
-                                {
-                                    <span class="badge bg-danger">
-                                        <i class="bi bi-trophy"></i> Challenge Match
-                                    </span>
-                                }
-                            </div>
-                            <small class="text-muted">
-                                <i class="bi bi-calendar3"></i>
-                                @match.MatchDate.ToString("dd/MM/yyyy HH:mm")
-                            </small>
-                        </div>
-                    </div>
-                    
-                    <div class="card-body">
+            <div class="match-card">
+                <!-- Match Card Header -->
+                <div class="match-card-header">
+                    <div class="match-badges">
                         @if (match.Format == (int)PCM_396.Models.MatchFormat.Singles)
                         {
-                            <!-- Singles -->
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="p-3 bg-success bg-opacity-10 rounded mb-3">
-                                        <h6 class="text-success mb-3">
-                                            <i class="bi bi-trophy-fill"></i> Người thắng
-                                        </h6>
-                                        <div class="d-flex align-items-center">
-                                            <i class="bi bi-person-circle display-6 text-success me-3"></i>
-                                            <div>
-                                                <div class="fw-bold fs-5">@match.Winner1.FullName</div>
-                                                <span class="badge bg-success">
-                                                    <i class="bi bi-star-fill"></i> Rank: @match.Winner1.RankLevel.ToString("F1")
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="p-3 bg-danger bg-opacity-10 rounded mb-3">
-                                        <h6 class="text-danger mb-3">
-                                            <i class="bi bi-x-circle-fill"></i> Người thua
-                                        </h6>
-                                        <div class="d-flex align-items-center">
-                                            <i class="bi bi-person-circle display-6 text-danger me-3"></i>
-                                            <div>
-                                                <div class="fw-bold fs-5">@match.Loser1.FullName</div>
-                                                <span class="badge bg-danger">
-                                                    <i class="bi bi-star-fill"></i> Rank: @match.Loser1.RankLevel.ToString("F1")
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <span class="match-badge badge-singles">
+                                <i class="bi bi-person"></i> Đơi (Singles)
+                            </span>
                         }
                         else
                         {
-                            <!-- Doubles -->
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="p-3 bg-success bg-opacity-10 rounded mb-3">
-                                        <h6 class="text-success mb-3">
-                                            <i class="bi bi-trophy-fill"></i> Đội thắng (Winners)
-                                        </h6>
-                                        <div class="d-flex align-items-center mb-2">
-                                            <i class="bi bi-person-circle fs-4 text-success me-2"></i>
-                                            <div>
-                                                <div class="fw-bold">@match.Winner1.FullName</div>
-                                                <span class="badge bg-success">
-                                                    <i class="bi bi-star-fill"></i> @match.Winner1.RankLevel.ToString("F1")
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex align-items-center">
-                                            <i class="bi bi-person-circle fs-4 text-success me-2"></i>
-                                            <div>
-                                                <div class="fw-bold">@match.Winner2?.FullName</div>
-                                                <span class="badge bg-success">
-                                                    <i class="bi bi-star-fill"></i> @match.Winner2?.RankLevel.ToString("F1")
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="p-3 bg-danger bg-opacity-10 rounded mb-3">
-                                        <h6 class="text-danger mb-3">
-                                            <i class="bi bi-x-circle-fill"></i> Đội thua (Losers)
-                                        </h6>
-                                        <div class="d-flex align-items-center mb-2">
-                                            <i class="bi bi-person-circle fs-4 text-danger me-2"></i>
-                                            <div>
-                                                <div class="fw-bold">@match.Loser1.FullName</div>
-                                                <span class="badge bg-danger">
-                                                    <i class="bi bi-star-fill"></i> @match.Loser1.RankLevel.ToString("F1")
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex align-items-center">
-                                            <i class="bi bi-person-circle fs-4 text-danger me-2"></i>
-                                            <div>
-                                                <div class="fw-bold">@match.Loser2?.FullName</div>
-                                                <span class="badge bg-danger">
-                                                    <i class="bi bi-star-fill"></i> @match.Loser2?.RankLevel.ToString("F1")
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <span class="match-badge badge-doubles">
+                                <i class="bi bi-people"></i> Đôi (Doubles)
+                            </span>
+                        }
+                        
+                        @if (match.IsRanked)
+                        {
+                            <span class="match-badge badge-ranked">
+                                <i class="bi bi-star-fill"></i> Tính điểm
+                            </span>
                         }
                         
                         @if (match.Challenge != null)
                         {
-                            <div class="alert alert-danger border-0 mb-0 mt-3">
-                                <i class="bi bi-trophy-fill me-2"></i>
-                                <strong>Từ kèo:</strong> @match.Challenge.Title
-                            </div>
+                            <span class="match-badge badge-challenge">
+                                <i class="bi bi-trophy"></i> Challenge Match
+                            </span>
                         }
                     </div>
+                    <div class="match-date">
+                        <i class="bi bi-calendar3"></i>
+                        @match.MatchDate.ToString("dd/MM/yyyy HH:mm")
+                    </div>
+                </div>
+                
+                <!-- Match Card Body -->
+                <div class="match-card-body">
+                    @if (match.Format == (int)PCM_396.Models.MatchFormat.Singles)
+                    {
+                        <!-- Singles Match -->
+                        <div class="match-players">
+                            <!-- Winner -->
+                            <div class="player-section winner-section">
+                                <div class="section-label">
+                                    <i class="bi bi-trophy-fill"></i> Người thắng (Winner)
+                                </div>
+                                <div class="player-card winner-card">
+                                    <div class="player-icon">
+                                        <i class="bi bi-person-circle"></i>
+                                    </div>
+                                    <div class="player-info">
+                                        <div class="player-name">@match.Winner1.FullName</div>
+                                        <div class="player-rank">
+                                            <i class="bi bi-star-fill"></i> @match.Winner1.RankLevel.ToString("F1")
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Loser -->
+                            <div class="player-section loser-section">
+                                <div class="section-label">
+                                    <i class="bi bi-x-circle-fill"></i> Người thua (Loser)
+                                </div>
+                                <div class="player-card loser-card">
+                                    <div class="player-icon">
+                                        <i class="bi bi-person-circle"></i>
+                                    </div>
+                                    <div class="player-info">
+                                        <div class="player-name">@match.Loser1.FullName</div>
+                                        <div class="player-rank">
+                                            <i class="bi bi-star-fill"></i> @match.Loser1.RankLevel.ToString("F1")
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <!-- Doubles Match -->
+                        <div class="match-players">
+                            <!-- Winners Team -->
+                            <div class="player-section winner-section">
+                                <div class="section-label">
+                                    <i class="bi bi-trophy-fill"></i> Đội thắng (Winners)
+                                </div>
+                                <div class="team-cards">
+                                    <div class="player-card winner-card">
+                                        <div class="player-icon">
+                                            <i class="bi bi-person-circle"></i>
+                                        </div>
+                                        <div class="player-info">
+                                            <div class="player-name">@match.Winner1.FullName</div>
+                                            <div class="player-rank">
+                                                <i class="bi bi-star-fill"></i> @match.Winner1.RankLevel.ToString("F1")
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="player-card winner-card">
+                                        <div class="player-icon">
+                                            <i class="bi bi-person-circle"></i>
+                                        </div>
+                                        <div class="player-info">
+                                            <div class="player-name">@match.Winner2?.FullName</div>
+                                            <div class="player-rank">
+                                                <i class="bi bi-star-fill"></i> @match.Winner2?.RankLevel.ToString("F1")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Losers Team -->
+                            <div class="player-section loser-section">
+                                <div class="section-label">
+                                    <i class="bi bi-x-circle-fill"></i> Đội thua (Losers)
+                                </div>
+                                <div class="team-cards">
+                                    <div class="player-card loser-card">
+                                        <div class="player-icon">
+                                            <i class="bi bi-person-circle"></i>
+                                        </div>
+                                        <div class="player-info">
+                                            <div class="player-name">@match.Loser1.FullName</div>
+                                            <div class="player-rank">
+                                                <i class="bi bi-star-fill"></i> @match.Loser1.RankLevel.ToString("F1")
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="player-card loser-card">
+                                        <div class="player-icon">
+                                            <i class="bi bi-person-circle"></i>
+                                        </div>
+                                        <div class="player-info">
+                                            <div class="player-name">@match.Loser2?.FullName</div>
+                                            <div class="player-rank">
+                                                <i class="bi bi-star-fill"></i> @match.Loser2?.RankLevel.ToString("F1")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    
+                    @if (match.Challenge != null)
+                    {
+                        <div class="challenge-info">
+                            <i class="bi bi-trophy-fill"></i>
+                            <strong>Từ kèo:</strong> @match.Challenge.Title
+                        </div>
+                    }
                 </div>
             </div>
         }
     </div>
 }
+</div>
+
+<style>
+    .match-history-page {
+        padding: 2rem 1rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .match-history-header .header-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 28px;
+        box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+    }
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #1f2937;
+        margin: 0;
+    }
+
+    .page-subtitle {
+        color: #6b7280;
+        font-size: 0.95rem;
+    }
+
+    .empty-state-card {
+        background: white;
+        border-radius: 20px;
+        padding: 4rem 2rem;
+        text-align: center;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    .empty-icon {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 1.5rem;
+        background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        color: #9ca3af;
+    }
+
+    .empty-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #374151;
+    }
+
+    .empty-text {
+        color: #6b7280;
+    }
+
+    .matches-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .match-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .match-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        border-color: #667eea;
+    }
+
+    .match-card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .match-badges {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .match-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+
+    .badge-singles {
+        background: rgba(255, 255, 255, 0.25);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .badge-doubles {
+        background: rgba(255, 255, 255, 0.25);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .badge-ranked {
+        background: #fbbf24;
+        color: #92400e;
+    }
+
+    .badge-challenge {
+        background: #ef4444;
+        color: white;
+    }
+
+    .match-date {
+        color: white;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .match-card-body {
+        padding: 1.5rem;
+    }
+
+    .match-players {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+
+    .player-section {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .section-label {
+        font-weight: 700;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 0;
+    }
+
+    .winner-section .section-label {
+        color: #059669;
+    }
+
+    .loser-section .section-label {
+        color: #dc2626;
+    }
+
+    .player-card {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.25rem;
+        border-radius: 16px;
+        transition: all 0.3s ease;
+    }
+
+    .winner-card {
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        border: 2px solid #10b981;
+    }
+
+    .winner-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .loser-card {
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        border: 2px solid #ef4444;
+    }
+
+    .loser-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .player-icon {
+        font-size: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .winner-card .player-icon {
+        color: #059669;
+    }
+
+    .loser-card .player-icon {
+        color: #dc2626;
+    }
+
+    .player-info {
+        flex: 1;
+    }
+
+    .player-name {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 0.5rem;
+    }
+
+    .player-rank {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.375rem 0.875rem;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.875rem;
+    }
+
+    .winner-card .player-rank {
+        background: #059669;
+        color: white;
+    }
+
+    .loser-card .player-rank {
+        background: #dc2626;
+        color: white;
+    }
+
+    .team-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .challenge-info {
+        margin-top: 1.5rem;
+        padding: 1rem 1.25rem;
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        border-left: 4px solid #dc2626;
+        border-radius: 10px;
+        color: #991b1b;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 991px) {
+        .match-players {
+            grid-template-columns: 1fr;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+        }
+    }
+
+    @@media (max-width: 767px) {
+        .match-history-page {
+            padding: 1rem 0.5rem;
+        }
+
+        .match-card-header {
+            padding: 1rem;
+        }
+
+        .match-card-body {
+            padding: 1rem;
+        }
+
+        .player-icon {
+            font-size: 2rem;
+        }
+
+        .player-name {
+            font-size: 1rem;
+        }
+
+        .match-history-header .header-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+        }
+    }
+</style>
